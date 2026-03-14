@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders | Shreeji Farshan</title>
+    <link rel="stylesheet" href="font.css" />
+    <link rel="stylesheet" href="output.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        dancing: ['"Dancing Script"', 'cursive'],
+                        nunito: ['Nunito', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #fff5eb 0%, #fed7aa 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid #fed7aa;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ea580c, #f97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ea580c, #f97316);
+            color: white;
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(234, 88, 12, 0.4);
+        }
+
+        .btn-icon {
+            padding: 0.75rem;
+            border-radius: 50%;
+            background: #fed7aa;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-icon:hover {
+            background: #fdba74;
+            transform: scale(1.1);
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid #fed7aa;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .avatar {
+            position: relative;
+        }
+
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 1.25rem;
+            background: linear-gradient(135deg, #fb923c, #ea580c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 8px 20px rgba(234, 88, 12, 0.3);
+        }
+
+        .status-dot {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            width: 24px;
+            height: 24px;
+            background: #22c55e;
+            border-radius: 50%;
+            border: 4px solid white;
+        }
+
+        .user-info h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-info p {
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .orders-section {
+            background: white;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid #fed7aa;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #ea580c, #f97316);
+            padding: 1.5rem 2rem;
+            color: white;
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-title h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .section-title p {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .controls {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        select {
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        select option {
+            color: #1f2937;
+        }
+
+        .order-count {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 0.75rem;
+            font-weight: 700;
+        }
+
+        .orders-container {
+            padding: 1.5rem;
+        }
+
+        .order-card {
+            background: linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #fed7aa;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+
+        .order-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-main {
+            display: flex;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .order-details {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .order-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .order-id {
+            font-family: 'Courier New', monospace;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .badge-cash {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-card {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-upi {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+
+        .order-meta {
+            display: flex;
+            gap: 1.5rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .items-box {
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .items-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        .items-header span:first-child {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .items-header span:last-child {
+            font-weight: 700;
+            color: #ea580c;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-row span:first-child {
+            color: #6b7280;
+        }
+
+        .item-row span:last-child {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .order-summary {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 1rem;
+            min-width: 200px;
+        }
+
+        .total-amount {
+            text-align: right;
+        }
+
+        .total-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+
+        .total-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ea580c, #f97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .download-btn {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #ea580c, #f97316);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+            transition: all 0.3s;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(234, 88, 12, 0.4);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.5rem;
+            background: #fed7aa;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .empty-state h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.75rem;
+        }
+
+        .empty-state p {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .order-main {
+                flex-direction: column;
+            }
+
+            .order-summary {
+                align-items: stretch;
+            }
+
+            .total-amount {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">Shreeji Farshan</a>
+                <div class="header-actions">
+                    <button id="themeToggle" class="btn-icon">
+                        <span id="themeIcon">🌙</span>
+                    </button>
+                    <a href="menu.html" class="btn btn-primary">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                        Back to Menu
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Profile Card -->
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="avatar">
+                    <div class="avatar-circle">
+                        <span id="userInitial">U</span>
+                    </div>
+                    <div class="status-dot"></div>
+                </div>
+                <div class="user-info">
+                    <h1 id="userName">User</h1>
+                    <p>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        <span id="userEmail">email@example.com</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Section -->
+        <div class="orders-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <div>
+                        <h2>Order History</h2>
+                        <p>Track and manage your orders</p>
+                    </div>
+                    <div class="controls">
+                        <select id="sortBy">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                        </select>
+                        <div id="orderCount" class="order-count">0 Orders</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ordersContainer" class="orders-container">
+                <!-- Orders will be inserted here -->
+            </div>
+
+            <div id="emptyState" class="empty-state hidden">
+                <div class="empty-icon">
+                    <svg width="64" height="64" fill="none" stroke="#ea580c" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                </div>
+                <h3>No Orders Yet</h3>
+                <p>Start exploring our delicious sweets and namkeen!</p>
+                <a href="menu.html" class="btn btn-primary">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    Browse Menu
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+
+        themeToggle.addEventListener('click', () => {
+            themeIcon.textContent = themeIcon.textContent === '🌙' ? '☀️' : '🌙';
+        });
+
+        // Check if user is logged in
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) {
+            alert('Please login to view your orders');
+            window.location.href = 'login.html';
+        }
+
+        // Display user info
+        document.getElementById('userName').textContent = user.name;
+        document.getElementById('userEmail').textContent = user.email;
+        document.getElementById('userInitial').textContent = user.name.charAt(0).toUpperCase();
+
+        // Load and display orders
+        function loadOrders() {
+            const allOrders = JSON.parse(localStorage.getItem('orders')) || [];
+            const userOrders = allOrders.filter(order => order.user_id === user.id);
+
+            const sortBy = document.getElementById('sortBy').value;
+            if (sortBy === 'newest') {
+                userOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
+            } else {
+                userOrders.sort((a, b) => new Date(a.date) - new Date(b.date));
+            }
+
+            const container = document.getElementById('ordersContainer');
+            const emptyState = document.getElementById('emptyState');
+            const orderCount = document.getElementById('orderCount');
+
+            orderCount.textContent = `${userOrders.length} Order${userOrders.length !== 1 ? 's' : ''}`;
+
+            if (userOrders.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            container.innerHTML = userOrders.map(order => {
+                const date = new Date(order.date);
+                const formattedDate = date.toLocaleDateString('en-IN', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                const formattedTime = date.toLocaleTimeString('en-IN', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const itemCount = order.items.reduce((sum, item) => sum + item.qty, 0);
+
+                const badgeClass = {
+                    'Cash': 'badge-cash',
+                    'Card': 'badge-card',
+                    'UPI': 'badge-upi'
+                }[order.payment_method] || 'badge-cash';
+
+                return `
+                    <div class="order-card">
+                        <div class="order-main">
+                            <div class="order-details">
+                                <div class="order-header">
+                                    <div class="order-id">${order.order_id}</div>
+                                    <span class="badge ${badgeClass}">${order.payment_method}</span>
+                                </div>
+                                <div class="order-meta">
+                                    <div class="meta-item">
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                        ${formattedDate}
+                                    </div>
+                                    <div class="meta-item">
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                        ${formattedTime}
+                                    </div>
+                                </div>
+                                <div class="items-box">
+                                    <div class="items-header">
+                                        <span>Items Ordered</span>
+                                        <span>${itemCount} item${itemCount > 1 ? 's' : ''}</span>
+                                    </div>
+                                    ${order.items.slice(0, 3).map(item => `
+                                        <div class="item-row">
+                                            <span>${item.title} × ${item.qty}</span>
+                                            <span>₹${item.price * item.qty}</span>
+                                        </div>
+                                    `).join('')}
+                                    ${order.items.length > 3 ? `<div style="font-size: 0.75rem; color: #6b7280; font-style: italic; margin-top: 0.5rem;">+${order.items.length - 3} more items</div>` : ''}
+                                </div>
+                            </div>
+                            <div class="order-summary">
+                                <div class="total-amount">
+                                    <div class="total-label">Total Amount</div>
+                                    <div class="total-value">₹${order.total}</div>
+                                </div>
+                                <button onclick="downloadBill('${order.order_id}')" class="download-btn">
+                                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    Download Bill
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Download Bill as PDF
+        function downloadBill(orderId) {
+            const allOrders = JSON.parse(localStorage.getItem('orders')) || [];
+            const order = allOrders.find(o => o.order_id === orderId);
+
+            if (!order) {
+                alert('Order not found!');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const orderDate = new Date(order.date).toLocaleString('en-IN', {
+                dateStyle: 'medium',
+                timeStyle: 'short',
+                timeZone: 'Asia/Kolkata'
+            });
+
+            // Header
+            doc.setFontSize(22);
+            doc.setTextColor(234, 88, 12);
+            doc.text("SHREEJI FARSHAN", 105, 20, null, null, "center");
+
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text("Authentic Indian Sweets & Namkeen", 105, 28, null, null, "center");
+            doc.line(20, 32, 190, 32);
+
+            // Order Details
+            doc.setFontSize(10);
+            doc.text(`Order ID: ${order.order_id}`, 20, 45);
+            doc.text(`Date: ${orderDate}`, 20, 50);
+            doc.text(`Customer: ${order.user_name}`, 20, 55);
+            doc.text(`Payment Mode: ${order.payment_method}`, 140, 45);
+
+            // Items Table
+            const tableColumn = ["#", "Item Name", "Price (Rs)", "Qty", "Total (Rs)"];
+            const tableRows = [];
+
+            order.items.forEach((item, index) => {
+                const itemData = [
+                    index + 1,
+                    item.title,
+                    item.price,
+                    item.qty,
+                    item.price * item.qty,
+                ];
+                tableRows.push(itemData);
+            });
+
+            doc.autoTable({
+                head: [tableColumn],
+                body: tableRows,
+                startY: 65,
+                theme: 'striped',
+                headStyles: { fillColor: [234, 88, 12] },
+                margin: { top: 65 },
+            });
+
+            // Total
+            const finalY = doc.lastAutoTable.finalY + 10;
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text(`Grand Total: Rs. ${order.total}/-`, 140, finalY);
+
+            // Footer
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+            doc.text("Thank you for your business!", 105, finalY + 20, null, null, "center");
+            doc.text("Contact: 9638841988", 105, finalY + 25, null, null, "center");
+
+            // Save
+            doc.save(`Bill_${order.order_id}.pdf`);
+        }
+
+        // Sort change handler
+        document.getElementById('sortBy').addEventListener('change', loadOrders);
+
+        // Initial load
+        loadOrders();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "tailwind": "tailwindcss -i ./input.css -o ./output.css --watch",
+    "start": "node server.js"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.6"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "body-parser": "^2.2.2",
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "sqlite3": "^5.1.7",
+    "twilio": "^5.12.0"
+  }
+}

@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menu | Shreeji Farshan</title>
+    <link rel="stylesheet" href="font.css" />
+    <link rel="stylesheet" href="output.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        dancing: ['"Dancing Script"', 'cursive'],
+                        nunito: ['Nunito', 'sans-serif'],
+                        merriweather: ['Merriweather', 'serif'],
+                    },
+                    colors: {
+                        primary: '#ea580c',
+                        secondary: '#f59e0b',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #fbbf24;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-amber-50 dark:bg-gray-950 text-amber-950 dark:text-gray-100 font-nunito flex flex-col min-h-screen transition-colors duration-300">
+
+    <!-- Header -->
+    <header
+        class="bg-amber-50 dark:bg-gray-900 shadow-sm sticky top-0 z-50 border-b border-orange-100 dark:border-gray-800 transition-colors duration-300">
+        <div class="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="index.html"
+                class="font-dancing text-3xl font-bold text-orange-600 hover:text-orange-700 transition">
+                Shreeji Farshan
+            </a>
+
+            <!-- Search Bar -->
+            <div class="hidden md:flex flex-grow max-w-lg mx-8">
+                <div class="relative w-full">
+                    <input type="text" id="search-bar"
+                        class="w-full bg-white dark:bg-gray-800 border-2 border-orange-200 dark:border-gray-700 rounded-full py-2 px-4 focus:outline-none focus:border-orange-500 text-sm placeholder-amber-800/50 dark:text-white transition-colors"
+                        placeholder="Search for Fafda, Jalebi, Farshan...">
+                    <button id="search-btn"
+                        class="absolute right-1 top-1 bottom-1 bg-orange-500 hover:bg-orange-600 text-white rounded-full px-4 flex items-center justify-center transition">
+                        Search
+                    </button>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex gap-4 items-center">
+
+                <!-- Dark Mode Toggle -->
+                <button id="themeToggle" class="p-2 rounded-full hover:bg-orange-100 dark:hover:bg-gray-800 transition">
+                    <svg id="sunIcon" class="hidden dark:block w-5 h-5 text-yellow-400" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                    </svg>
+                    <svg id="moonIcon" class="block dark:hidden w-5 h-5 text-gray-600" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+
+                <!-- Cart Icon -->
+                <button id="cartBtn" class="relative p-2 text-orange-600 hover:text-orange-800 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <span id="cartCount"
+                        class="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                </button>
+
+                <!-- Auth -->
+                <div id="authSection">
+                    <a href="login.html" id="loginLink"
+                        class="font-bold text-sm text-orange-600 hover:underline">Login</a>
+                    <div id="userMenu" class="hidden flex flex-col items-end leading-tight">
+                        <span id="userName" class="text-sm font-bold dark:text-gray-200">User</span>
+                        <a href="orders.html" class="text-[10px] text-orange-600 hover:underline">My Orders</a>
+                        <button id="logoutBtn" class="text-[10px] text-red-500 hover:underline">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-screen-xl w-full mx-auto flex flex-col md:flex-row flex-grow py-8 px-4 gap-8">
+
+        <!-- Sidebar Filters -->
+        <aside
+            class="w-full md:w-64 flex-shrink-0 space-y-8 bg-white/50 dark:bg-gray-900/50 p-6 rounded-2xl h-fit sticky top-24 border border-orange-100 dark:border-gray-700 backdrop-blur-sm">
+
+            <!-- Category Filter -->
+            <div>
+                <h3 class="font-bold text-lg text-orange-700 dark:text-orange-500 mb-4 font-merriweather">Categories
+                </h3>
+                <ul class="space-y-2 text-amber-900 dark:text-gray-300">
+                    <li><label class="flex items-center gap-3 cursor-pointer hover:text-orange-600"><input type="radio"
+                                name="category" value="all" checked class="accent-orange-600"
+                                onclick="filterItems('all')"> All Items</label></li>
+                    <li><label class="flex items-center gap-3 cursor-pointer hover:text-orange-600"><input type="radio"
+                                name="category" value="Farsan" class="accent-orange-600"
+                                onclick="filterItems('Farsan')"> Farsan</label></li>
+                    <li><label class="flex items-center gap-3 cursor-pointer hover:text-orange-600"><input type="radio"
+                                name="category" value="Sweets" class="accent-orange-600"
+                                onclick="filterItems('Sweets')"> Sweets</label></li>
+                </ul>
+            </div>
+
+        </aside>
+
+        <!-- Product Grid -->
+        <div class="flex-grow">
+            <!-- Top Bar -->
+            <div
+                class="flex justify-between items-center mb-6 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-orange-100 dark:border-gray-700">
+                <h2 class="font-bold text-2xl text-orange-700 dark:text-orange-500 font-dancing">Our Menu</h2>
+                <span id="resultCount" class="text-sm text-gray-500 dark:text-gray-400">Loading...</span>
+            </div>
+
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Items injected here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Cart / Checkout Modal -->
+    <div id="checkoutModal"
+        class="fixed inset-0 bg-black/50 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm">
+        <div
+            class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+            <div
+                class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-orange-50 dark:bg-gray-900">
+                <h3 class="text-2xl font-bold text-orange-700 font-dancing">Your Cart</h3>
+                <button onclick="toggleCheckout()" class="text-gray-500 hover:text-red-500"><svg class="w-6 h-6"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg></button>
+            </div>
+
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-grow">
+                <div id="cartItemsList" class="space-y-4">
+                    <!-- Cart Items -->
+                </div>
+                <div id="emptyCartMsg" class="text-center py-10 text-gray-500 hidden">Your cart is empty!</div>
+            </div>
+
+            <div class="p-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-700">
+                <div class="flex justify-between items-center mb-4 text-xl font-bold">
+                    <span>Total:</span>
+                    <span id="cartTotal" class="text-orange-600">₹0</span>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-bold mb-3 dark:text-gray-200">Payment Method</label>
+
+                    <div class="grid grid-cols-3 gap-3 mb-4">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="paymentType" value="Card" class="peer sr-only" checked
+                                onchange="togglePaymentFields()">
+                            <div
+                                class="p-3 border dark:border-gray-600 rounded-lg text-center peer-checked:border-orange-500 peer-checked:bg-orange-50 dark:peer-checked:bg-orange-900/20 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                <span class="block text-sm font-bold dark:text-gray-200">Card</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="paymentType" value="UPI" class="peer sr-only"
+                                onchange="togglePaymentFields()">
+                            <div
+                                class="p-3 border dark:border-gray-600 rounded-lg text-center peer-checked:border-orange-500 peer-checked:bg-orange-50 dark:peer-checked:bg-orange-900/20 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                <span class="block text-sm font-bold dark:text-gray-200">UPI</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="paymentType" value="Cash" class="peer sr-only"
+                                onchange="togglePaymentFields()">
+                            <div
+                                class="p-3 border dark:border-gray-600 rounded-lg text-center peer-checked:border-orange-500 peer-checked:bg-orange-50 dark:peer-checked:bg-orange-900/20 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                <span class="block text-sm font-bold dark:text-gray-200">Cash</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Card Fields -->
+                    <div id="cardFields"
+                        class="space-y-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-100 dark:border-gray-700">
+                        <input type="text" placeholder="Card Number"
+                            class="w-full p-2 border rounded text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-white outline-none focus:border-orange-500">
+                        <div class="flex gap-3">
+                            <input type="text" placeholder="MM/YY"
+                                class="w-1/2 p-2 border rounded text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-white outline-none focus:border-orange-500">
+                            <input type="text" placeholder="CVV"
+                                class="w-1/2 p-2 border rounded text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-white outline-none focus:border-orange-500">
+                        </div>
+                    </div>
+
+                    <!-- UPI Fields -->
+                    <div id="upiFields"
+                        class="hidden space-y-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800 text-center">
+                        <p class="text-sm text-blue-800 dark:text-blue-300 mb-2">Scan QR to Pay</p>
+                        <img src="assets/qrcode.jpg" class="mx-auto rounded bg-white p-2 w-32 h-32">
+                        <p class="text-xs text-blue-600 dark:text-blue-400 mt-2">or enter UPI ID</p>
+                        <input type="text" placeholder="username@upi"
+                            class="w-full p-2 border rounded text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-white outline-none focus:border-blue-500">
+                    </div>
+
+                    <!-- Cash Info -->
+                    <div id="cashFields"
+                        class="hidden p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-800 text-center">
+                        <p class="text-green-800 dark:text-green-300 text-sm font-bold">✓ Pay upon delivery</p>
+                        <p class="text-xs text-green-600 dark:text-green-400 mt-1">Please keep exact change ready.</p>
+                    </div>
+                </div>
+
+                <button onclick="processCheckout()"
+                    class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl shadow-lg transition transform active:scale-95">
+                    Confirm Order
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer
+        class="flex flex-col items-center py-10 bg-amber-50 dark:bg-gray-900 mt-auto border-t border-orange-200 dark:border-gray-800 transition-colors duration-300">
+        <p class="text-sm text-amber-800 dark:text-gray-400 font-bold">Shreeji Farshan © 2024</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // --- Data Setup ---
+        const namkeenImages = [
+            "./assets/namkeen/adanidal.webp", "./assets/namkeen/aloo_sev.jpg", "./assets/namkeen/bhakharvadi.jpg",
+            "./assets/namkeen/bhavnagri.webp", "./assets/namkeen/bundi_gathia.webp", "./assets/namkeen/chakree.webp",
+            "./assets/namkeen/chavanu.webp", "./assets/namkeen/fafdi.jpg", "./assets/namkeen/faradi_chevdo.jpg",
+            "./assets/namkeen/jada_tikha.jpg", "./assets/namkeen/makhana.webp", "./assets/namkeen/makhaniya.jpg",
+            "./assets/namkeen/patra.jpg", "./assets/namkeen/sakarpara.webp", "./assets/namkeen/sev.webp",
+            "./assets/namkeen/sev_bundi.jpg", "./assets/namkeen/sweet_sakarpara.jpg", "./assets/namkeen/tikhi_fafdi.jpg",
+            "./assets/namkeen/tweest.jpg"
+        ];
+
+        const sweetImages = [
+            "./assets/sweet/Gulabjamun.jpg", "./assets/sweet/anjeer_roll.jpg", "./assets/sweet/barfi.jpg",
+            "./assets/sweet/boll.jpg", "./assets/sweet/choco_barfi.jpg", "./assets/sweet/doodhnapenda.jpg",
+            "./assets/sweet/gulab_jamun.jpg", "./assets/sweet/jalebi.jpg", "./assets/sweet/kaju_katali.jpg",
+            "./assets/sweet/kaju_katli.jpg", "./assets/sweet/keshar_penda.jpg", "./assets/sweet/khajur_boll.jpg",
+            "./assets/sweet/lisha_ladu.jpg", "./assets/sweet/mix_pack.jpg", "./assets/sweet/mixpack.jpg",
+            "./assets/sweet/monthad.jpg", "./assets/sweet/motichur.jpg", "./assets/sweet/petha.webp",
+            "./assets/sweet/pista_pan.jpg", "./assets/sweet/pista_roll.jpg", "./assets/sweet/ras_goola.jpg",
+            "./assets/sweet/rash_goola.webp", "./assets/sweet/sata.webp", "./assets/sweet/sonpapdi.webp",
+            "./assets/sweet/thabadi.webp", "./assets/sweet/thabdi.jpg", "./assets/sweet/topra_pak.jpg",
+            "./assets/sweet/white_thabdi.jpg"
+        ];
+
+        function formatName(path) {
+            const fileName = path.split('/').pop().split('.')[0].toLowerCase();
+            const corrections = {
+                'adanidal': 'Adani Dal',
+                'aloo_sev': 'Aloo Sev',
+                'bhakharvadi': 'Bhakharwadi',
+                'bhavnagri': 'Bhavnagari',
+                'bundi_gathia': 'Boondi Gathiya',
+                'chakree': 'Chakli',
+                'chavanu': 'Chavanu',
+                'fafdi': 'Papdi',
+                'faradi_chevdo': 'Farali Chevdo',
+                'jada_tikha': 'Jada Tikha',
+                'makhana': 'Makhana',
+                'makhaniya': 'Makhania',
+                'patra': 'Patra',
+                'sakarpara': 'Shakkarpara',
+                'sev': 'Sev',
+                'sev_bundi': 'Sev Boondi',
+                'sweet_sakarpara': 'Sweet Shakkarpara',
+                'tikhi_fafdi': 'Tikhi Papdi',
+                'tweest': 'Twist',
+                'gulabjamun': 'Gulab Jamun',
+                'anjeer_roll': 'Anjeer Roll',
+                'barfi': 'Barfi',
+                'boll': 'Ball',
+                'choco_barfi': 'Choco Barfi',
+                'doodhnapenda': 'Doodh Na Penda',
+                'gulab_jamun': 'Gulab Jamun',
+                'jalebi': 'Jalebi',
+                'kaju_katali': 'Kaju Katli',
+                'kaju_katli': 'Kaju Katli',
+                'keshar_penda': 'Kesar Penda',
+                'khajur_boll': 'Khajur Ball',
+                'lisha_ladu': 'Lisha Ladoo',
+                'mix_pack': 'Mix Pack',
+                'mixpack': 'Mix Pack',
+                'monthad': 'Mohanthal',
+                'motichur': 'Motichoor',
+                'petha': 'Petha',
+                'pista_pan': 'Pista Pan',
+                'pista_roll': 'Pista Roll',
+                'ras_goola': 'Rasgulla',
+                'rash_goola': 'Rasgulla',
+                'sata': 'Sata',
+                'sonpapdi': 'Soan Papdi',
+                'thabadi': 'Thabdi',
+                'thabdi': 'Thabdi',
+                'topra_pak': 'Topra Pak',
+                'white_thabdi': 'White Thabdi'
+            };
+
+            if (corrections[fileName]) return corrections[fileName];
+
+            return fileName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        const items = [];
+        namkeenImages.forEach((img, i) => items.push({ id: `namkeen-${i}`, title: formatName(img), category: "Farsan", price: Math.floor(Math.random() * 200) + 200, image: img, rating: (Math.random() * 1.5 + 3.5).toFixed(1) }));
+        sweetImages.forEach((img, i) => items.push({ id: `sweet-${i}`, title: formatName(img), category: "Sweets", price: Math.floor(Math.random() * 500) + 400, image: img, rating: (Math.random() * 1.5 + 3.5).toFixed(1) }));
+
+        const shuffledItems = [...items].sort(() => 0.5 - Math.random());
+
+        // --- State ---
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // --- Render ---
+        function renderItems(list) {
+            const grid = document.getElementById('product-grid');
+            document.getElementById('resultCount').innerText = `${list.length} Items Found`;
+            grid.innerHTML = '';
+            list.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl dark:shadow-none dark:hover:bg-gray-700 transition duration-300 overflow-hidden border border-orange-100 dark:border-gray-700 flex flex-col group";
+                card.innerHTML = `
+             <div class="h-56 overflow-hidden relative bg-amber-50 dark:bg-gray-900">
+                <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                <div class="absolute top-3 right-3 bg-white/90 dark:bg-black/70 px-2 py-1 rounded-lg text-xs font-bold text-orange-600 dark:text-orange-400">${item.rating} ★</div>
+             </div>
+             <div class="p-5 flex flex-col flex-grow">
+                <h3 class="font-bold text-lg text-amber-950 dark:text-white mb-1">${item.title}</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">${item.category}</p>
+                <div class="mt-auto flex items-center justify-between">
+                   <span class="font-bold text-xl text-orange-600">₹${item.price}</span>
+                   <button onclick="addToCart('${item.id}')" class="bg-orange-100 hover:bg-orange-200 dark:bg-orange-900/30 dark:hover:bg-orange-900/50 text-orange-700 dark:text-orange-400 px-4 py-2 rounded-full font-bold text-sm transition">
+                      Add +
+                   </button>
+                </div>
+             </div>
+            `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterItems(cat) {
+            const filtered = cat === 'all' ? shuffledItems : shuffledItems.filter(i => i.category.includes(cat));
+            renderItems(filtered);
+        }
+
+        renderItems(shuffledItems);
+
+        // --- Cart Logic ---
+        function addToCart(id) {
+            const item = items.find(i => i.id === id);
+            const existing = cart.find(c => c.id === id);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...item, qty: 1 });
+            }
+            updateCartUI();
+
+            // Simple Toast
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "Added!";
+            btn.classList.add('bg-green-100', 'text-green-700');
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.remove('bg-green-100', 'text-green-700');
+            }, 1000);
+        }
+
+        function updateCartUI() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            const count = cart.reduce((acc, item) => acc + item.qty, 0);
+            document.getElementById('cartCount').innerText = count;
+        }
+
+        document.getElementById('cartBtn').addEventListener('click', toggleCheckout);
+
+        function toggleCheckout() {
+            const modal = document.getElementById('checkoutModal');
+            const list = document.getElementById('cartItemsList');
+            const emptyMsg = document.getElementById('emptyCartMsg');
+
+            if (modal.classList.contains('hidden')) {
+                // Open
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+
+                list.innerHTML = '';
+                if (cart.length === 0) {
+                    emptyMsg.classList.remove('hidden');
+                } else {
+                    emptyMsg.classList.add('hidden');
+                    let total = 0;
+                    cart.forEach((item, index) => {
+                        total += item.price * item.qty;
+                        const row = document.createElement('div');
+                        row.className = "flex items-center justify-between bg-white dark:bg-gray-700 p-3 rounded-lg shadow-sm";
+                        row.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <img src="${item.image}" class="w-12 h-12 rounded object-cover">
+                            <div>
+                                <h4 class="font-bold text-sm dark:text-white">${item.title}</h4>
+                                <div class="text-xs text-gray-500 dark:text-gray-300">₹${item.price} x ${item.qty}</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                             <div class="font-bold text-orange-600">₹${item.price * item.qty}</div>
+                             <button onclick="removeFromCart(${index})" class="text-red-400 hover:text-red-600 text-lg">×</button>
+                        </div>
+                    `;
+                        list.appendChild(row);
+                    });
+                    document.getElementById('cartTotal').innerText = '₹' + total;
+                }
+            } else {
+                // Close
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+            toggleCheckout(); // Refresh
+            setTimeout(toggleCheckout, 0); // Reopen essentially
+        }
+
+        function togglePaymentFields() {
+            const type = document.querySelector('input[name="paymentType"]:checked').value;
+            document.getElementById('cardFields').classList.add('hidden');
+            document.getElementById('upiFields').classList.add('hidden');
+            document.getElementById('cashFields').classList.add('hidden');
+
+            if (type === 'Card') document.getElementById('cardFields').classList.remove('hidden');
+            if (type === 'UPI') document.getElementById('upiFields').classList.remove('hidden');
+            if (type === 'Cash') document.getElementById('cashFields').classList.remove('hidden');
+        }
+
+        async function processCheckout() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user) {
+                alert("Please Login to complete purchase!");
+                window.location.href = "login.html";
+                return;
+            }
+
+            if (!user.phone) {
+                alert("Phone number not found! Please register again with your WhatsApp number.");
+                return;
+            }
+
+            if (cart.length === 0) return alert("Cart is empty!");
+
+            const total = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+            const method = document.querySelector('input[name="paymentType"]:checked').value;
+            const itemsData = cart.map(i => ({ id: i.id, title: i.title, qty: i.qty, price: i.price }));
+
+            const btn = event.currentTarget; // Get button
+            const originalText = btn.innerText;
+
+            // Payment Simulation
+            if (method !== 'Cash') {
+                btn.innerText = "Processing Payment...";
+                btn.disabled = true;
+                btn.classList.add('opacity-75', 'cursor-not-allowed');
+                // Simulate 2 sec delay
+                await new Promise(r => setTimeout(r, 2000));
+            }
+
+            // Generate order ID and Date
+            const orderId = 'ORD-' + Date.now();
+            const orderDateObj = new Date();
+            const orderDate = orderDateObj.toLocaleString('en-IN', {
+                dateStyle: 'medium',
+                timeStyle: 'short',
+                timeZone: 'Asia/Kolkata'
+            });
+
+            const orderData = {
+                order_id: orderId,
+                user_id: user.id,
+                user_name: user.name,
+                total: total,
+                payment_method: method,
+                items: itemsData,
+                date: orderDateObj.toISOString(),
+                status: 'confirmed'
+            };
+
+            // Save order to localStorage
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            orders.push(orderData);
+            localStorage.setItem('orders', JSON.stringify(orders));
+
+            // --- Generate PDF Bill ---
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Header
+            doc.setFontSize(22);
+            doc.setTextColor(234, 88, 12); // Orange
+            doc.text("SHREEJI FARSHAN", 105, 20, null, null, "center");
+
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text("Authentic Indian Sweets & Namkeen", 105, 28, null, null, "center");
+            doc.line(20, 32, 190, 32);
+
+            // Customer & Order Details
+            doc.setFontSize(10);
+            doc.text(`Order ID: ${orderId}`, 20, 45);
+            doc.text(`Date: ${orderDate}`, 20, 50);
+            doc.text(`Customer: ${user.name}`, 20, 55);
+            doc.text(`Phone: ${user.phone}`, 20, 60);
+            doc.text(`Payment Mode: ${method}`, 140, 45);
+
+            // Item Table
+            const tableColumn = ["#", "Item Name", "Price (Rs)", "Qty", "Total (Rs)"];
+            const tableRows = [];
+
+            itemsData.forEach((item, index) => {
+                const itemData = [
+                    index + 1,
+                    item.title,
+                    item.price,
+                    item.qty,
+                    item.price * item.qty,
+                ];
+                tableRows.push(itemData);
+            });
+
+            doc.autoTable({
+                head: [tableColumn],
+                body: tableRows,
+                startY: 70,
+                theme: 'striped',
+                headStyles: { fillColor: [234, 88, 12] }, // Orange Header
+                margin: { top: 70 },
+            });
+
+            // Total
+            const finalY = doc.lastAutoTable.finalY + 10;
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text(`Grand Total: Rs. ${total}/-`, 140, finalY);
+
+            // Footer
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+            doc.text("Thank you for your business!", 105, finalY + 20, null, null, "center");
+            doc.text("Contact: 9638841988", 105, finalY + 25, null, null, "center");
+            // Save PDF
+            doc.save(`Bill_${orderId}.pdf`);
+
+
+            // Success UI
+            btn.innerText = "Order Placed! ✓";
+            btn.classList.remove('bg-orange-600', 'hover:bg-orange-700');
+            btn.classList.add('bg-green-600', 'hover:bg-green-700');
+
+            setTimeout(() => {
+                alert(`✅ Order Placed Successfully!\n\nOrder ID: ${orderId}\nTotal: ₹${total}\n\nView your order in "My Orders" section.`);
+
+                // Cleanup
+                cart = [];
+                updateCartUI();
+                toggleCheckout();
+                btn.disabled = false;
+                btn.innerText = originalText;
+                btn.classList.remove('bg-green-600', 'hover:bg-green-700', 'opacity-75', 'cursor-not-allowed');
+                btn.classList.add('bg-orange-600', 'hover:bg-orange-700');
+            }, 500);
+        }
+
+
+        updateCartUI();
+
+        // --- Shared Theme/Auth Logic ---
+        const themeToggle = document.getElementById('themeToggle');
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        });
+
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            document.getElementById('loginLink').classList.add('hidden');
+            document.getElementById('userMenu').classList.remove('hidden');
+            document.getElementById('userName').innerText = 'Hi, ' + user.name;
+        }
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('user');
+            window.location.reload();
+        });
+
+        // --- Search Functionality ---
+        const searchBar = document.getElementById('search-bar');
+        const searchBtn = document.getElementById('search-btn');
+
+        function executeSearch() {
+            const query = searchBar.value.toLowerCase().trim();
+            if (!query) {
+                renderItems(shuffledItems);
+                return;
+            }
+            const filtered = items.filter(item =>
+                item.title.toLowerCase().includes(query) ||
+                item.category.toLowerCase().includes(query)
+            );
+            renderItems(filtered);
+            // Scroll to product grid for mobile
+            if (window.innerWidth < 768) {
+                document.getElementById('product-grid').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        searchBtn.addEventListener('click', executeSearch);
+        searchBar.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') executeSearch();
+        });
+        searchBar.addEventListener('input', (e) => {
+            if (e.target.value === '') renderItems(shuffledItems);
+        });
+
+    </script>
+</body>
+
+</html>

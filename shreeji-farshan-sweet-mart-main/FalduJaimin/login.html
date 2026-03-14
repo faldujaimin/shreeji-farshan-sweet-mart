@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Shreeji Farshan</title>
+    <link rel="stylesheet" href="output.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ea580c',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body
+    class="bg-orange-50 dark:bg-gray-900 transition-colors duration-300 min-h-screen flex items-center justify-center font-sans">
+
+    <div
+        class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl max-w-md w-full border border-orange-100 dark:border-gray-700">
+        <h2 class="text-3xl font-bold text-center text-orange-600 mb-6" id="formTitle">Login</h2>
+
+        <form id="authForm" class="space-y-4">
+            <div id="nameField" class="hidden space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
+                    <input type="text" id="name"
+                        class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">WhatsApp Number</label>
+                    <input type="tel" id="phone" placeholder="+91"
+                        class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none transition">
+                    <p class="text-xs text-gray-500 mt-1">We will send your bill/QR code here.</p>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                <input type="email" id="email" required
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none transition">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+                <input type="password" id="password" required
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none transition">
+            </div>
+
+            <button type="submit"
+                class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 rounded-lg transition duration-300 transform active:scale-95 shadow-lg">
+                <span id="btnText">Login</span>
+            </button>
+        </form>
+
+        <p class="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
+            <span id="toggleText">Don't have an account?</span>
+            <button id="toggleBtn" class="text-orange-600 font-bold hover:underline">Register</button>
+        </p>
+
+        <a href="index.html"
+            class="block text-center mt-6 text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">← Back to
+            Home</a>
+
+        <button onclick="resetAppData()"
+            class="block w-full text-center mt-4 text-xs text-red-400 hover:text-red-600 underline">
+            [Dev] Reset App Data
+        </button>
+    </div>
+
+    <script>
+        const form = document.getElementById('authForm');
+        const toggleBtn = document.getElementById('toggleBtn');
+        const nameField = document.getElementById('nameField');
+        const formTitle = document.getElementById('formTitle');
+        const btnText = document.getElementById('btnText');
+        const toggleText = document.getElementById('toggleText');
+
+        let isLogin = true;
+
+        // Check Dark Mode
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            isLogin = !isLogin;
+            if (isLogin) {
+                nameField.classList.add('hidden');
+                formTitle.textContent = 'Login';
+                btnText.textContent = 'Login';
+                toggleText.textContent = "Don't have an account?";
+                toggleBtn.textContent = 'Register';
+                document.getElementById('name').removeAttribute('required');
+                document.getElementById('phone').removeAttribute('required');
+            } else {
+                nameField.classList.remove('hidden');
+                formTitle.textContent = 'Register';
+                btnText.textContent = 'Sign Up';
+                toggleText.textContent = "Already have an account?";
+                toggleBtn.textContent = 'Login';
+                document.getElementById('name').setAttribute('required', 'true');
+                document.getElementById('phone').setAttribute('required', 'true');
+            }
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+
+            // Get existing users from localStorage
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+
+            if (isLogin) {
+                // Login Logic
+                const user = users.find(u => u.email === email && u.password === password);
+                if (user) {
+                    // Save current user session
+                    const userSession = { id: user.id, name: user.name, email: user.email, phone: user.phone };
+                    localStorage.setItem('user', JSON.stringify(userSession));
+                    alert(`Welcome back, ${user.name}! 👋`);
+                    window.location.href = 'menu.html';
+                } else {
+                    alert('Invalid email or password!');
+                }
+            } else {
+                // Registration Logic
+
+                // Validate phone number
+                if (!phone || phone.length < 10) {
+                    alert('Please enter a valid WhatsApp number (10 digits minimum)');
+                    return;
+                }
+
+                // Check if email already exists
+                if (users.find(u => u.email === email)) {
+                    alert('Email already registered! Please login.');
+                    return;
+                }
+
+                // Clean phone number (remove spaces, dashes, etc.)
+                const cleanPhone = phone.replace(/\D/g, '');
+
+                // Create new user
+                const newUser = {
+                    id: Date.now(),
+                    name: name,
+                    email: email,
+                    phone: cleanPhone,
+                    password: password,
+                    createdAt: new Date().toISOString()
+                };
+
+                users.push(newUser);
+                localStorage.setItem('users', JSON.stringify(users));
+
+                // Auto login after registration
+                const userSession = { id: newUser.id, name: newUser.name, email: newUser.email, phone: newUser.phone };
+                localStorage.setItem('user', JSON.stringify(userSession));
+
+                alert(`Registration successful! Welcome, ${name}! 🎉`);
+                window.location.href = 'menu.html';
+            }
+        });
+
+        function resetAppData() {
+            if (confirm('Are you sure? This will delete ALL registered users and orders.')) {
+                localStorage.clear();
+                alert('App data cleared!');
+                window.location.reload();
+            }
+        }
+    </script>
+</body>
+
+</html>
